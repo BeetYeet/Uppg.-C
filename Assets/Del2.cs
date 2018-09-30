@@ -28,6 +28,10 @@ public class Del2: MonoBehaviour
 	private bool dragonGameEnded;
 	private int playerMinDamage;
 	private int playerMaxDamage;
+	private int value;
+	private int lastValue;
+	private int numWins;
+	const string playerPrefName = "HighScoreGuess";
 
 	void Start()
 	{
@@ -44,8 +48,9 @@ public class Del2: MonoBehaviour
 		dragonGameEnded = false;
 		playerMinDamage = Random.Range(2, 10);
 		playerMaxDamage = Random.Range(20, 35);
-
-	Debug.Log( "All progress was reset! (excluding highscores)" );
+		value = 50;
+		numWins = 0;
+		Debug.Log( "All progress was reset! (excluding highscores)" );
 	}
 
 	void Update()
@@ -143,8 +148,66 @@ public class Del2: MonoBehaviour
 		}
 
 
-		// uppg 3
-
+		// uppg 5
+		if ( Input.GetKeyDown( KeyCode.Y ) )
+		{
+			value = Random.Range( 0, 100 );
+			if ( value > lastValue )
+			{
+				//player won
+				Debug.Log( "You Won!" );
+				numWins++;
+				NewWin(numWins);
+			}
+			else
+			{
+				//player lost
+				Debug.Log( "You lost... :(" );
+				numWins = 0;
+			}
+			lastValue = value;
+			Debug.Log( "Your Score is: " + numWins );
+			Debug.Log( "Your Highscore is: " + PlayerPrefs.GetInt( playerPrefName ) );
+		}
+		if ( Input.GetKeyDown( KeyCode.H ) )
+		{
+			value = Random.Range( 0, 100 );
+			if ( value < lastValue )
+			{
+				//player won
+				Debug.Log( "You Won!" );
+				numWins++;
+				NewWin( numWins );
+			}
+			else
+			{
+				//player lost
+				Debug.Log( "You lost... :(" );
+				numWins = 0;
+			}
+			lastValue = value;
+			Debug.Log( "Your Score is: " + numWins );
+			Debug.Log( "Your Highscore is: " + PlayerPrefs.GetInt( playerPrefName ) );
+		}
 
 	}
+
+
+	void NewWin(int guesses)
+	{
+		if ( PlayerPrefs.HasKey( playerPrefName) )
+		{
+			int old = PlayerPrefs.GetInt( playerPrefName );
+			if ( old < guesses )
+			{
+				PlayerPrefs.SetInt( playerPrefName, guesses );
+			}
+		}
+		else
+		{
+			PlayerPrefs.SetInt( playerPrefName, guesses );
+		}
+
+	}
+
 }
